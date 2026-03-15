@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 
 @RestController
 @RequestMapping("/v1/excel")
@@ -19,6 +20,7 @@ import java.time.LocalDateTime;
 public class ExcelController {
 
     private final ExcelService excelService;
+    private final DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy--HH:mm:ss");
 
     @GetMapping("/generateExcel")
     public ResponseEntity<byte[]> generateExcel() {
@@ -28,7 +30,7 @@ public class ExcelController {
         byte[] excelBytes = excelService.generateExcel();
 
         HttpHeaders headers = new HttpHeaders();
-        headers.setContentDispositionFormData("attachment", "Reporte_ " + LocalDateTime.now() + ".xlsx");
+        headers.setContentDispositionFormData("attachment", "Reporte_ " + LocalDateTime.now().format(formatter) + ".xlsx");
         headers.setContentLength(excelBytes.length);
 
         log.info("Reporte archivo Excel finalizado");
